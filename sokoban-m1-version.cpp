@@ -28,7 +28,7 @@ void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
 
     char mapa1[11][11] = {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // microban|| 10
                           1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, /* posição inicial: x=4,y=5 */
-                          1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
+                          1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,  
                           1, 2, 2, 2, 0, 0, 1, 0, 0, 0, 0,
                           1, 3, 3, 3, 0, 0, 1, 0, 0, 0, 0,
                           1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
@@ -133,17 +133,17 @@ void imprimeMapaPersonagem(char matrizJogo[11][11], int x, int y)
                 case 2:
 
                     cout << char(176);
-                    break; // caixa
+                    break; // caixa em posição livre(movimentando)
                            // default: cout<<"-"; //erro
                 case 3:
 
                     cout << char(248);
-                    break; // ponto p/ a caixa ficar
+                    break; // posição final
 
                 case 4:
 
                     cout << char(178);
-                    break; // caixa no lugar certo
+                    break; // caixa em posição final
                 }		   // fim switch
             }
         }
@@ -336,13 +336,18 @@ int main()
     {
         system("cls");
         ComandoProfesor();
-        cout << " 1 - JOGAR" << endl;
-        cout << " 2 - SOBRE" << endl;
-        cout << " 3 - SAIR" << endl;
-        cout << endl;
-        cout << "ESCOLHA UMA DAS OPCOES ACIMA" << endl;
-        cout << endl;
-        cin >> EscolhaMenu;
+        cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
+        cout << "x                                                 x" << endl;
+        cout << "x                       MENU:                     x" << endl;
+        cout << "x                                                 x" << endl;
+        cout << "x                     1~JOGAR~                    x" << endl;
+        cout << "x                                                 x" << endl;
+        cout << "x                     2~SOBRE~                    x" << endl;
+        cout << "x                                                 x" << endl;
+        cout << "x                     3~SAIR~                     x" << endl;
+        cout << "x                                                 x" << endl;
+        cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
+          cin >> EscolhaMenu;
 
         system("cls");
 
