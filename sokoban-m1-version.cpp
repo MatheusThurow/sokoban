@@ -78,16 +78,30 @@ void imprimeMapaPersonagem(char matrizJogo[11][11], int x, int y)
     } // fim for mapa
 }
 
+bool verificarVitoria(char matrizJogo[11][11]) {
+    for (int i = 0; i < 11; i++) {
+        for (int j = 0; j < 11; j++) {
+            if (matrizJogo[i][j] == 2) {
+                return false; // Ainda não venceu
+            }
+        }
+    }
+    return true; // venceu - todas as caixas estão no lugar
+}
+
+
 void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
 {
     int modificadorX = 0, modificadorY = 0; // modifcadores de x e y da matriz
+    bool ganhar = false; // nova tentativa k k k k k
 
-    bool ganhou = false;
 
     if (_kbhit()) // determinar se a tecla foi utilizada ou não
     {
         tecla = getch(); // funcionamento tecla
     }
+
+//switch reperente a movimentação normal (das teclas):
 
     switch (tecla)
     {
@@ -114,6 +128,8 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
     case 32:
         return menu();
     }
+    
+//switch referente a empurrar a caixa:
 
     switch (matrizJogo[x + modificadorX][y + modificadorY])
     {
@@ -167,16 +183,28 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
             break;
 
         case 3:
-            matrizJogo[x + modificadorX][y + modificadorY] = 3;
+            matrizJogo[x + modificadorX][y + modificadorY] = 3;             
             matrizJogo[x + modificadorX * 2][y + modificadorY * 2] = 4;
             if (modificadorX != 0)
                 x += modificadorX;
             if (modificadorY != 0)
                 y += modificadorY;
             break;  
+                verificarVitoria(matrizJogo);
+
         }
         break;
     }
+    ganhar = verificarVitoria(matrizJogo); // atribua o resultado à variável ganhar
+
+    if (ganhar == true) {
+        cout << "Você venceu!" << endl;
+
+        PausarLimpar();
+        return menu();
+        // Faça algo para encerrar o jogo ou oferecer opções para o jogador
+    }
+    /*verificarVitoria(matrizJogo,ganhar);*/
 }
 
 void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
@@ -325,7 +353,7 @@ void menu()//loop --> so sai quando for = 3
         cout << "x                                                 x" << endl;
         cout << "x                     3~SAIR~                     x" << endl;
         cout << "x                                                 x" << endl;
-        cout << "x  aperte ''espaco'' para voltar ao menu inicial  x" << endl;
+        cout << "x  aperte 9 para voltar ao menu inicial  x" << endl;
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
             cin >> teclaa;
         system("cls");
@@ -383,7 +411,7 @@ void menu()//loop --> so sai quando for = 3
             PausarLimpar();
 
             break;
-        case 9:     //ta zero pq n consigo por a abrra de espaço
+        case 9:     //ta 9 pq n consigo por a abrra de espaço
 
             return telabloqueio();  
 
