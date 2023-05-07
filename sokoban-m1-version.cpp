@@ -4,6 +4,16 @@
 
 using namespace std;
 
+//sobrecarga de função
+void menu();
+void imprimeMapaPersonagem(char matrizJogo[11][11], int x, int y);
+void movimento(char tecla, char matrizJogo[11][11], int &x, int &y);
+void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y);
+void Dificuldade(char matrizJogo[11][11], int escolha, int &x, int &y);
+void jogar();
+void PausarLimpar();
+void telabloqueio();
+
 void ComandoProfesor()
 {
     /// ALERTA: N O MODIFICAR O TRECHO DE C DIGO, A SEGUIR.
@@ -101,6 +111,8 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
         modificadorX = 0; // permanece
         modificadorY = 1; // direta
         break;
+    case 32:
+        return menu();
     }
 
     switch (matrizJogo[x + modificadorX][y + modificadorY])
@@ -161,8 +173,6 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
                 x += modificadorX;
             if (modificadorY != 0)
                 y += modificadorY;
-
-
             break;  
         }
         break;
@@ -218,10 +228,8 @@ void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
                 matrizJogo[i][j] = mapa1[i][j];
             }
         }
-
         x = 4;
         y = 5;
-
         break;
     case 2:
         for (int i = 0; i < 11; i++)
@@ -250,15 +258,21 @@ void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
 
 void Dificuldade(char matrizJogo[11][11], int escolha, int &x, int &y)
 {
-    cout << " (1) THUrow" << endl;
-    cout << " (2) Nicola" << endl;
-    cout << " (3) APU" << endl;
-
-    cout << "Escolha a Dificuldade do jogo: ";
+    cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
+    cout << "x                                                 x" << endl;
+    cout << "x                   (1) THUrow                    x" << endl;
+    cout << "x                   (2) Nicola                    x" << endl;
+    cout << "x                   (3) APU                       x" << endl;
+    cout << "x                                                 x" << endl;
+    cout << "x         Escolha a Dificuldade do jogo           x" << endl;
+    cout << "x                                                 x" << endl;
+    cout << "x                                                 x" << endl;
+    cout << "x     aperte 9 para voltar ao menu anterior       x" << endl;
+    cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
     cin >> escolha;
     escolheMatriz(matrizJogo, escolha, x, y);
-    if(escolha != 1 && 2 && 3){
-        return ;
+    if(escolha == 9){                     // esta zero po motivos de n da pra por a barra de espaço
+        return menu();
     }
 }
 
@@ -270,14 +284,12 @@ void jogar()
     char tecla;
 
     Dificuldade(matrizJogo, escolha, x, y);
-
     escolheMatriz(matrizJogo, escolha, x, y);
 
     system("cls");
     while (true)
     {
         ComandoProfesor();
-
         imprimeMapaPersonagem(matrizJogo, x, y);
         movimento(tecla, matrizJogo, x, y);
     }
@@ -289,16 +301,19 @@ void PausarLimpar()
     system("cls");
 }
 
-void menu()
+void menu()//loop --> so sai quando for = 3
 {
 
     int EscolhaMenu;
     int EscolheDificul;
     char matrizJogo[11][11];
+    int tecla1; //n ta sendo utilizado
+    int teclaa;
 
     do
     {
         system("cls");
+        system ("pause");
         ComandoProfesor();
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
         cout << "x                                                 x" << endl;
@@ -310,12 +325,16 @@ void menu()
         cout << "x                                                 x" << endl;
         cout << "x                     3~SAIR~                     x" << endl;
         cout << "x                                                 x" << endl;
+        cout << "x  aperte ''espaco'' para voltar ao menu inicial  x" << endl;
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
-        cin >> EscolhaMenu;
-
+            cin >> teclaa;
         system("cls");
 
-        switch (EscolhaMenu)
+        if (_kbhit()) // determinar se a tecla foi utilizada ou não             n foi deu para por a barra de espaço para voltar por motivos desconhecidos
+    {
+        teclaa = getch(); // funcionamento tecla
+    }
+        switch (teclaa)
         {
         case 1:
 
@@ -364,6 +383,11 @@ void menu()
             PausarLimpar();
 
             break;
+        case 9:     //ta zero pq n consigo por a abrra de espaço
+
+            return telabloqueio();  
+
+            break;
 
         default:
 
@@ -373,26 +397,14 @@ void menu()
 
             break;
         }
-    } while (EscolhaMenu != 3);
-
-    
-}
-void voltarMenu(){
-    int v;
-    switch (v)
-    {
-    case 9:
-        return menu(); 
-        break;
-    
-    default:
-        break;
+    } while (teclaa != 3);{
+        if(teclaa == 32){      //n funfa
+        return telabloqueio();
+    }
     }
 }
 
-int main(){
-
-    int usuario;
+void telabloqueio(){
 
     cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
     cout << "x                                                 x" << endl;
@@ -405,9 +417,12 @@ int main(){
     cout << "x                                                 x" << endl;
     cout << "x                                                 x" << endl;
     cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
-        PausarLimpar();
+        system("pause");
         menu();
-   
-    return 0;
+}
 
+int main()
+{
+    telabloqueio();
+    return 0;
 }
