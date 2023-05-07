@@ -17,8 +17,13 @@ void PausarLimpar();
 void telabloqueio();
 void carregarMapa(char m[11][11], int &x, int &y);
 void salvarMapa(char m[11][11], int &x, int &y);
+void sairDoPrograma();
 
-
+void sairDoPrograma()
+{
+    cout << "Encerrando o programa..." << endl;
+    exit(0); // encerra o programa com status de saída 0 (sem erros)
+}
 
 void ComandoProfesor()
 {
@@ -64,14 +69,14 @@ void salvarMapa(char m[11][11], int &x, int &y)
                     case 1:
                         mapasSalvos << '1'; // parede
                         break;
+                    case 2:
+                        mapasSalvos << '2'; // caixa
+                        break;
                     case 3:
-                        mapasSalvos << '3'; // caixa
+                        mapasSalvos << '3'; // posicao final
                         break;
                     case 4:
-                        mapasSalvos << '4'; // posicao final
-                        break;
-                    case 5:
-                        mapasSalvos << '5'; // caixa na posicao final
+                        mapasSalvos << '4'; // caixa na posicao final
                         break;
                     } // fim switch
                 }
@@ -105,13 +110,13 @@ void carregarMapa(char m[11][11], int &x, int &y)
                 case 1:
                     m[i][j] = char(219);
                     break;
-                case 3:
+                case 2:
                     m[i][j] = char(176);
                     break;
-                case 4:
+                case 3:
                     m[i][j] = char(169);
                     break;
-                case 5:
+                case 4:
                     m[i][j] = char(178);
                     break;
                 case 0:
@@ -447,9 +452,11 @@ void menu()//loop --> so sai quando for = 3
         cout << "x                                                 x" << endl;
         cout << "x                     2~SOBRE~                    x" << endl;
         cout << "x                                                 x" << endl;
-        cout << "x                     3~SAIR~                     x" << endl;
+        cout << "x                    3~CONTINUAR~                 x" << endl;
         cout << "x                                                 x" << endl;
-        cout << "x                 4~CARREGAR MAPA                 x" << endl;
+        cout << "x                  4~CARREGAR MAPA                x" << endl;
+        cout << "x                                                 x" << endl;
+        cout << "x                     5~SAIR                      x" << endl;
         cout << "x                                                 x" << endl;
         cout << "x       aperte 9 para voltar ao menu inicial      x" << endl;
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
@@ -505,8 +512,6 @@ void menu()//loop --> so sai quando for = 3
 
         case 3:
 
-            cout << " saindo do jogo...." << endl;
-
             PausarLimpar();
 
             break;
@@ -514,6 +519,12 @@ void menu()//loop --> so sai quando for = 3
         case 4:
         
         carregarMapa(matrizJogo, x, y);
+
+        break;
+
+        case 5:
+
+        sairDoPrograma();
 
         break;
 
@@ -531,11 +542,8 @@ void menu()//loop --> so sai quando for = 3
 
             break;
         }
-    } while (teclaa != 3);{
-        if(teclaa == 32){      //n funfa
-        return telabloqueio();
-    }
-    }
+    } while (teclaa != 3);
+        
 }
 
 void telabloqueio(){
