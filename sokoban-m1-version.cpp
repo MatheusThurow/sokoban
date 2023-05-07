@@ -1,6 +1,8 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
+#include <fstream>
+
 
 using namespace std;
 
@@ -13,6 +15,10 @@ void Dificuldade(char matrizJogo[11][11], int escolha, int &x, int &y);
 void jogar();
 void PausarLimpar();
 void telabloqueio();
+void carregarMapa(char m[11][11], int &x, int &y);
+void salvarMapa(char m[11][11], int &x, int &y);
+
+
 
 void ComandoProfesor()
 {
@@ -31,6 +37,91 @@ void ComandoProfesor()
     coord.Y = CY;
     // FIM: COMANDOS PARA REPOSICIONAR O CURSOR NO IN CIO DA TELA
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void salvarMapa(char m[11][11], int &x, int &y)
+{
+    ofstream mapasSalvos("mapas.txt");
+
+    if (mapasSalvos.is_open())
+    {
+
+        for (int i = 0; i < 11; i++)
+        {
+            for (int j = 0; j < 11; j++)
+            {
+                if (i == x && j == y)
+                {
+                    mapasSalvos << '9'; // personagem
+                }
+                else
+                {
+                    switch (m[i][j])
+                    {
+                    case 0:
+                        mapasSalvos << "0"; // caminho
+                        break;
+                    case 1:
+                        mapasSalvos << '1'; // parede
+                        break;
+                    case 3:
+                        mapasSalvos << '3'; // caixa
+                        break;
+                    case 4:
+                        mapasSalvos << '4'; // posicao final
+                        break;
+                    case 5:
+                        mapasSalvos << '5'; // caixa na posicao final
+                        break;
+                    } // fim switch
+                }
+            }
+            mapasSalvos << endl;
+        }
+    }
+}
+
+void carregarMapa(char m[11][11], int &x, int &y)
+{
+    ifstream carregamento("mapas.txt"); //mesmo mapa do trabalho 
+
+    if (carregamento.is_open())
+    {
+
+        for (int i = 0; i < 11; i++)
+        {
+            for (int j = 0; j < 11; j++)
+            {
+                char c;
+                carregamento.get(c);
+
+                switch (c)
+                {
+                case 9:
+                    m[i][j] = char(24);
+                    x = i;
+                    y = j;
+                    break;
+                case 1:
+                    m[i][j] = char(219);
+                    break;
+                case 3:
+                    m[i][j] = char(176);
+                    break;
+                case 4:
+                    m[i][j] = char(169);
+                    break;
+                case 5:
+                    m[i][j] = char(178);
+                    break;
+                case 0:
+                    m[i][j] = ' ';
+                    break;
+                }
+            }
+            carregamento.ignore('\n');
+        }
+    }
 }
 
 void imprimeMapaPersonagem(char matrizJogo[11][11], int x, int y)
@@ -105,6 +196,10 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
 
     switch (tecla)
     {
+    case 8:
+        salvarMapa(matrizJogo, x, y);   //tentativa do botão salvar
+        break;
+
     case 72:
     case 'w':              // cima
         modificadorX = -1; // linha x sobe
@@ -337,7 +432,8 @@ void menu()//loop --> so sai quando for = 3
     char matrizJogo[11][11];
     int tecla1; //n ta sendo utilizado
     int teclaa;
-
+    int x,y;
+    
     do
     {
         system("cls");
@@ -353,8 +449,11 @@ void menu()//loop --> so sai quando for = 3
         cout << "x                                                 x" << endl;
         cout << "x                     3~SAIR~                     x" << endl;
         cout << "x                                                 x" << endl;
-        cout << "x  aperte 9 para voltar ao menu inicial  x" << endl;
+        cout << "x                 4~CARREGAR MAPA                 x" << endl;
+        cout << "x                                                 x" << endl;
+        cout << "x       aperte 9 para voltar ao menu inicial      x" << endl;
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
+
             cin >> teclaa;
         system("cls");
 
@@ -411,6 +510,13 @@ void menu()//loop --> so sai quando for = 3
             PausarLimpar();
 
             break;
+        
+        case 4:
+        
+        carregarMapa(matrizJogo, x, y);
+
+        break;
+
         case 9:     //ta 9 pq n consigo por a abrra de espaço
 
             return telabloqueio();  
