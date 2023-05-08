@@ -15,8 +15,8 @@ void Dificuldade(char matrizJogo[11][11], int escolha, int &x, int &y);
 void jogar();
 void PausarLimpar();
 void telabloqueio();
-void carregarMapa(char m[11][11], int &x, int &y);
-void salvarMapa(char m[11][11], int &x, int &y);
+void carregarMapa(char matrizJogo[11][11], int &x, int &y);
+void salvarMapa(char matrizJogo[11][11], int &x, int &y);
 void sairDoPrograma();
 
 void sairDoPrograma()
@@ -44,7 +44,7 @@ void ComandoProfesor()
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void salvarMapa(char m[11][11], int &x, int &y)
+void salvarMapa(char matrizJogo[11][11], int &x, int &y)
 {
     ofstream mapasSalvos("mapas.txt");
 
@@ -61,7 +61,7 @@ void salvarMapa(char m[11][11], int &x, int &y)
                 }
                 else
                 {
-                    switch (m[i][j])
+                    switch (matrizJogo[i][j])
                     {
                     case 0:
                         mapasSalvos << "0"; // caminho
@@ -86,7 +86,7 @@ void salvarMapa(char m[11][11], int &x, int &y)
     }
 }
 
-void carregarMapa(char m[11][11], int &x, int &y)
+void carregarMapa(char matrizJogo[11][11], int &x, int &y)
 {
     ifstream carregamento("mapas.txt"); //mesmo mapa do trabalho 
 
@@ -103,24 +103,24 @@ void carregarMapa(char m[11][11], int &x, int &y)
                 switch (c)
                 {
                 case 9:
-                    m[i][j] = char(24);
+                    matrizJogo[i][j] = char(24);
                     x = i;
                     y = j;
                     break;
                 case 1:
-                    m[i][j] = char(219);
+                    matrizJogo[i][j] = char(219);
                     break;
                 case 2:
-                    m[i][j] = char(176);
+                    matrizJogo[i][j] = char(176);
                     break;
                 case 3:
-                    m[i][j] = char(169);
+                    matrizJogo[i][j] = char(169);
                     break;
                 case 4:
-                    m[i][j] = char(178);
+                    matrizJogo[i][j] = char(178);
                     break;
                 case 0:
-                    m[i][j] = ' ';
+                    matrizJogo[i][j] = ' ';
                     break;
                 }
             }
@@ -543,7 +543,6 @@ void menu()//loop --> so sai quando for = 3
             break;
         }
     } while (teclaa != 3);
-        
 }
 
 void telabloqueio(){
