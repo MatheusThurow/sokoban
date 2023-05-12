@@ -374,8 +374,8 @@ void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
                 matrizJogo[i][j] = mapa2[i][j];
             }
         }
-        x = 5;
-        y = 7;
+        x = 4;
+        y = 6;
         break;
     case 3:
         for (int i = 0; i < 11; i++)
