@@ -2,11 +2,10 @@
 #include <windows.h>
 #include <conio.h>
 #include <fstream>
-
+#include <stdio.h>
 
 using namespace std;
 
-//sobrecarga de função
 void menu();
 void imprimeMapaPersonagem(char matrizJogo[11][11], int x, int y);
 void movimento(char tecla, char matrizJogo[11][11], int &x, int &y);
@@ -42,6 +41,12 @@ void ComandoProfesor()
     coord.Y = CY;
     // FIM: COMANDOS PARA REPOSICIONAR O CURSOR NO IN CIO DA TELA
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void PausarLimpar()
+{
+    system("pause");
+    system("cls");
 }
 
 void salvarMapa(char matrizJogo[11][11], int &x, int &y)
@@ -88,7 +93,7 @@ void salvarMapa(char matrizJogo[11][11], int &x, int &y)
 
 void carregarMapa(char matrizJogo[11][11], int &x, int &y)
 {
-    ifstream carregamento("mapas.txt"); //mesmo mapa do trabalho 
+    ifstream carregamento("mapas.txt"); // mesmo mapa do trabalho
 
     if (carregamento.is_open())
     {
@@ -174,10 +179,14 @@ void imprimeMapaPersonagem(char matrizJogo[11][11], int x, int y)
     } // fim for mapa
 }
 
-bool verificarVitoria(char matrizJogo[11][11]) {
-    for (int i = 0; i < 11; i++) {
-        for (int j = 0; j < 11; j++) {
-            if (matrizJogo[i][j] == 2) {
+bool verificarVitoria(char matrizJogo[11][11])
+{
+    for (int i = 0; i < 11; i++)
+    {
+        for (int j = 0; j < 11; j++)
+        {
+            if (matrizJogo[i][j] == 2)
+            {
                 return false; // Ainda não venceu
             }
         }
@@ -185,24 +194,22 @@ bool verificarVitoria(char matrizJogo[11][11]) {
     return true; // venceu - todas as caixas estão no lugar
 }
 
-
 void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
 {
     int modificadorX = 0, modificadorY = 0; // modifcadores de x e y da matriz
-    bool ganhar = false; // nova tentativa k k k k k
-
+    bool ganhar = false;                    // nova tentativa k k k k k
 
     if (_kbhit()) // determinar se a tecla foi utilizada ou não
     {
         tecla = getch(); // funcionamento tecla
     }
 
-//switch reperente a movimentação normal (das teclas):
+    // switch reperente a movimentação normal (das teclas):
 
     switch (tecla)
     {
     case 8:
-        salvarMapa(matrizJogo, x, y);   //tentativa do botão salvar
+        salvarMapa(matrizJogo, x, y); // tentativa do botão salvar
         break;
 
     case 72:
@@ -226,10 +233,10 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
         modificadorY = 1; // direta
         break;
     case 32:
-        return menu();
+        menu();
     }
-    
-//switch referente a empurrar a caixa:
+
+    // switch referente a empurrar a caixa:
 
     switch (matrizJogo[x + modificadorX][y + modificadorY])
     {
@@ -283,25 +290,25 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
             break;
 
         case 3:
-            matrizJogo[x + modificadorX][y + modificadorY] = 3;             
+            matrizJogo[x + modificadorX][y + modificadorY] = 3;
             matrizJogo[x + modificadorX * 2][y + modificadorY * 2] = 4;
             if (modificadorX != 0)
                 x += modificadorX;
             if (modificadorY != 0)
                 y += modificadorY;
-            break;  
-                verificarVitoria(matrizJogo);
-
+            break;
+            verificarVitoria(matrizJogo);
         }
         break;
     }
     ganhar = verificarVitoria(matrizJogo); // atribua o resultado à variável ganhar
 
-    if (ganhar == true) {
+    if (ganhar == true)
+    {
         cout << "Você venceu!" << endl;
 
         PausarLimpar();
-        return menu();
+        menu();
         // Faça algo para encerrar o jogo ou oferecer opções para o jogador
     }
     /*verificarVitoria(matrizJogo,ganhar);*/
@@ -380,7 +387,7 @@ void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
         }
         x = 4;
         y = 4;
-        break; 
+        break;
     }
 }
 
@@ -399,8 +406,9 @@ void Dificuldade(char matrizJogo[11][11], int escolha, int &x, int &y)
     cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
     cin >> escolha;
     escolheMatriz(matrizJogo, escolha, x, y);
-    if(escolha == 9){                     // esta zero po motivos de n da pra por a barra de espaço
-        return menu();
+    if (escolha == 9)
+    { // esta zero po motivos de n da pra por a barra de espaço
+        menu();
     }
 }
 
@@ -413,6 +421,7 @@ void jogar()
 
     Dificuldade(matrizJogo, escolha, x, y);
     escolheMatriz(matrizJogo, escolha, x, y);
+    salvarMapa(matrizJogo, x, y);
 
     system("cls");
     while (true)
@@ -423,26 +432,18 @@ void jogar()
     }
 }
 
-void PausarLimpar()
-{
-    system("pause");
-    system("cls");
-}
-
-void menu()//loop --> so sai quando for = 3
+void menu() // loop --> so sai quando for = 3
 {
 
-    int EscolhaMenu;
-    int EscolheDificul;
     char matrizJogo[11][11];
-    int tecla1; //n ta sendo utilizado
+
     int teclaa;
-    int x,y;
-    
+    int x, y;
+
     do
     {
         system("cls");
-        system ("pause");
+        system("pause");
         ComandoProfesor();
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
         cout << "x                                                 x" << endl;
@@ -454,20 +455,14 @@ void menu()//loop --> so sai quando for = 3
         cout << "x                                                 x" << endl;
         cout << "x                    3~CONTINUAR~                 x" << endl;
         cout << "x                                                 x" << endl;
-        cout << "x                  4~CARREGAR MAPA                x" << endl;
-        cout << "x                                                 x" << endl;
-        cout << "x                     5~SAIR                      x" << endl;
+        cout << "x                     4~SAIR                      x" << endl;
         cout << "x                                                 x" << endl;
         cout << "x       aperte 9 para voltar ao menu inicial      x" << endl;
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
 
-            cin >> teclaa;
+        cin >> teclaa;
         system("cls");
 
-        if (_kbhit()) // determinar se a tecla foi utilizada ou não             n foi deu para por a barra de espaço para voltar por motivos desconhecidos
-    {
-        teclaa = getch(); // funcionamento tecla
-    }
         switch (teclaa)
         {
         case 1:
@@ -480,33 +475,33 @@ void menu()//loop --> so sai quando for = 3
 
         case 2:
 
-        cout << endl;
-        cout << "OQUE E O SOKOBAN?" << endl;
-        cout << " E um tipo de jogo de transporte e movimentação de cubos ou engradados em um armazem. " << endl;
-        cout << " O objetivo e pegar e estocar o engradado em determinada posicoes." << endl;
-        cout << " O Sokoban originalfoi criado em 1981 por Hiroyuki Imabayashi, e publicado em 1982 por Thinking Rabbit," << endl;
-        cout << " uma empresa de software localizada em Takarazuka." << endl;
-        cout << endl;
-        cout << endl;
-        cout << "REGRAS:" << endl;
-        cout << "O caramujo empurra caixas em torno de um labirinto e tenta coloca-los em locais designados. " << endl;
-        cout << "Pressione a tecla de direção das casas adjacentes para empurrá-los. " << endl;
-        cout << "Pressione 4 para revogar," << endl;
-        cout << "pressione A para mover para cima," << endl;
-        cout << "pressione V para mover para baixo," << endl;
-        cout << "pressione <-- para mover para a esquerda, " << endl;
-        cout << "pressione --> para mover para a direita, " << endl;
-        cout << endl;
-        cout << " EM D E S E N V O L V I M E N T O " << endl;
-        cout << endl;
-        cout << endl;
-        cout << "EQUIPE DE DESENVOLVIMENTO:" << endl;
-        cout << endl;
-        cout << "Matheus Thurow" << endl;
-        cout << "Rodrigo Nicola" << endl;
-        cout << "kaio Saldanha" << endl;
-        cout << "Professor: ---" << endl;
-        PausarLimpar();
+            cout << endl;
+            cout << "OQUE E O SOKOBAN?" << endl;
+            cout << " E um tipo de jogo de transporte e movimentação de cubos ou engradados em um armazem. " << endl;
+            cout << " O objetivo e pegar e estocar o engradado em determinada posicoes." << endl;
+            cout << " O Sokoban originalfoi criado em 1981 por Hiroyuki Imabayashi, e publicado em 1982 por Thinking Rabbit," << endl;
+            cout << " uma empresa de software localizada em Takarazuka." << endl;
+            cout << endl;
+            cout << endl;
+            cout << "REGRAS:" << endl;
+            cout << "O caramujo empurra caixas em torno de um labirinto e tenta coloca-los em locais designados. " << endl;
+            cout << "Pressione a tecla de direção das casas adjacentes para empurrá-los. " << endl;
+            cout << "Pressione 4 para revogar," << endl;
+            cout << "pressione A para mover para cima," << endl;
+            cout << "pressione V para mover para baixo," << endl;
+            cout << "pressione <-- para mover para a esquerda, " << endl;
+            cout << "pressione --> para mover para a direita, " << endl;
+            cout << endl;
+            cout << " EM D E S E N V O L V I M E N T O " << endl;
+            cout << endl;
+            cout << endl;
+            cout << "EQUIPE DE DESENVOLVIMENTO:" << endl;
+            cout << endl;
+            cout << "Matheus Thurow" << endl;
+            cout << "Rodrigo Nicola" << endl;
+            cout << "kaio Saldanha" << endl;
+            cout << "Professor: ---" << endl;
+            PausarLimpar();
 
             break;
 
@@ -515,22 +510,16 @@ void menu()//loop --> so sai quando for = 3
             PausarLimpar();
 
             break;
-        
+
         case 4:
-        
-        carregarMapa(matrizJogo, x, y);
 
-        break;
+            sairDoPrograma();
 
-        case 5:
+            break;
 
-        sairDoPrograma();
+        case 9: // ta 9 pq n consigo por a abrra de espaço
 
-        break;
-
-        case 9:     //ta 9 pq n consigo por a abrra de espaço
-
-            return telabloqueio();  
+            telabloqueio();
 
             break;
 
@@ -545,7 +534,8 @@ void menu()//loop --> so sai quando for = 3
     } while (teclaa != 3);
 }
 
-void telabloqueio(){
+void telabloqueio()
+{
 
     cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
     cout << "x                                                 x" << endl;
@@ -558,8 +548,8 @@ void telabloqueio(){
     cout << "x                                                 x" << endl;
     cout << "x                                                 x" << endl;
     cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
-        system("pause");
-        menu();
+    system("pause");
+    menu();
 }
 
 int main()
