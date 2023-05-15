@@ -18,6 +18,8 @@ void carregarMapa(char matrizJogo[11][11], int &x, int &y);
 void salvarMapa(char matrizJogo[11][11], int &x, int &y);
 void sairDoPrograma();
 
+int contadorPassos = 0; // Contador de passos
+
 void sairDoPrograma()
 {
     cout << "Encerrando o programa..." << endl;
@@ -172,11 +174,13 @@ void imprimeMapaPersonagem(char matrizJogo[11][11], int x, int y)
 
                     cout << char(178);
                     break; // caixa em posição final
-                }          // fim switch
+                }
             }
         }
-        cout << "\n";
-    } // fim for mapa
+        cout << endl;
+    }
+    // Exibe o contador de passos em uma posição fixa
+    cout << "Passos: " << contadorPassos << endl;
 }
 
 bool verificarVitoria(char matrizJogo[11][11])
@@ -216,39 +220,53 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
     case 'w':              // cima
         modificadorX = -1; // linha x sobe
         modificadorY = 0;  // linha y permanece
+        contadorPassos++;
         break;
     case 80:
     case 's':             // baixo
         modificadorX = 1; // linha x desce
         modificadorY = 0; // permanece
+        contadorPassos++;
         break;
     case 75:
     case 'a':              // esquerda
         modificadorX = 0;  // permanece
         modificadorY = -1; // vai para esquerda
+        contadorPassos++;
         break;
     case 77:
     case 'd':             // direita
         modificadorX = 0; // permanece
         modificadorY = 1; // direta
+        contadorPassos++;
         break;
     case 32:
         menu();
+        break;
     }
 
     // switch referente a empurrar a caixa:
-
+    // Verifica se a próxima posição é uma parede
+    if (matrizJogo[x + modificadorX][y + modificadorY] == 1)
+    {
+        // Diminui o contador de passos em 1
+        contadorPassos--;
+        return; // Sai da função sem fazer o movimento
+    }
     switch (matrizJogo[x + modificadorX][y + modificadorY])
     {
     case 0:
+
         if (modificadorX != 0)
             x += modificadorX;
+
         if (modificadorY != 0)
             y += modificadorY;
+
         break;
 
     case 2:
-        switch (matrizJogo[x + modificadorX * 2][y + modificadorY * 2]) // acima da caixa
+        switch (matrizJogo[x + modificadorX * 2][y + modificadorY * 2])
         {
         case 0:
             matrizJogo[x + modificadorX][y + modificadorY] = 0;
@@ -258,6 +276,11 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
             if (modificadorY != 0)
                 y += modificadorY;
             break;
+
+        case 1:
+            // Diminui o contador de passos em 1
+            contadorPassos--;
+            return; // Sai da função sem fazer o movimento
 
         case 3:
             matrizJogo[x + modificadorX][y + modificadorY] = 0;
@@ -267,17 +290,26 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
             if (modificadorY != 0)
                 y += modificadorY;
             break;
+
+        case 4:
+            return; // Sai da função sem fazer o movimento
         }
+
+        // Adicione esta linha para diminuir o contador de passos
+        contadorPassos--;
         break;
 
     case 3:
         if (modificadorX != 0)
             x += modificadorX;
+
         if (modificadorY != 0)
             y += modificadorY;
+
         break;
 
     case 4:
+        contadorPassos--;
         switch (matrizJogo[x + modificadorX * 2][y + modificadorY * 2])
         {
         case 0:
@@ -287,7 +319,13 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
                 x += modificadorX;
             if (modificadorY != 0)
                 y += modificadorY;
+            // contadorPassos--;
             break;
+
+        case 1:
+            // Diminui o contador de passos em 1
+            contadorPassos--;
+            return; // Sai da função sem fazer o movimento
 
         case 3:
             matrizJogo[x + modificadorX][y + modificadorY] = 3;
@@ -306,7 +344,7 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
     if (ganhar == true)
     {
         cout << "Você venceu!" << endl;
-
+        cout << "Total de passos: " << contadorPassos << endl; // Exibe o total de passos
         PausarLimpar();
         menu();
         // Faça algo para encerrar o jogo ou oferecer opções para o jogador
@@ -422,8 +460,8 @@ void jogar()
     Dificuldade(matrizJogo, escolha, x, y);
     escolheMatriz(matrizJogo, escolha, x, y);
     salvarMapa(matrizJogo, x, y);
-
     system("cls");
+
     while (true)
     {
         ComandoProfesor();
@@ -436,7 +474,6 @@ void menu() // loop --> so sai quando for = 3
 {
 
     char matrizJogo[11][11];
-
     int teclaa;
     int x, y;
 
@@ -468,9 +505,7 @@ void menu() // loop --> so sai quando for = 3
         case 1:
 
             jogar();
-
             PausarLimpar();
-
             break;
 
         case 2:
@@ -502,33 +537,27 @@ void menu() // loop --> so sai quando for = 3
             cout << "kaio Saldanha" << endl;
             cout << "Professor: ---" << endl;
             PausarLimpar();
-
             break;
 
         case 3:
 
             PausarLimpar();
-
             break;
 
         case 4:
 
             sairDoPrograma();
-
             break;
 
         case 9: // ta 9 pq n consigo por a abrra de espaço
 
             telabloqueio();
-
             break;
 
         default:
 
             cout << "opcao invalida" << endl;
-
             PausarLimpar();
-
             break;
         }
     } while (teclaa != 3);
