@@ -17,6 +17,7 @@ void telabloqueio();
 void carregarMapa(char matrizJogo[11][11], int &x, int &y);
 void salvarMapa(char matrizJogo[11][11], int &x, int &y);
 void sairDoPrograma();
+void Login();
 
 int contadorPassos = 0; // Contador de passos
 
@@ -53,7 +54,7 @@ void PausarLimpar()
 
 void salvarMapa(char matrizJogo[11][11], int &x, int &y)
 {
-    ofstream mapasSalvos("mapas.txt");
+    ofstream mapasSalvos("mapas.txt", ios::app);
 
     if (mapasSalvos.is_open())
     {
@@ -208,7 +209,7 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
         tecla = getch(); // funcionamento tecla
     }
 
-    // switch reperente a movimentação normal (das teclas):
+    // switch referente a movimentação normal (das teclas):
 
     switch (tecla)
     {
@@ -349,7 +350,7 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
         menu();
         // Faça algo para encerrar o jogo ou oferecer opções para o jogador
     }
-    /*verificarVitoria(matrizJogo,ganhar);*/
+    verificarVitoria(matrizJogo);
 }
 
 void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
@@ -492,7 +493,9 @@ void menu() // loop --> so sai quando for = 3
         cout << "x                                                 x" << endl;
         cout << "x                    3~CONTINUAR~                 x" << endl;
         cout << "x                                                 x" << endl;
-        cout << "x                     4~SAIR                      x" << endl;
+        cout << "x                    4~RANKING~                   x" << endl;
+        cout << "x                                                 x" << endl;
+        cout << "x                     5~SAIR                      x" << endl;
         cout << "x                                                 x" << endl;
         cout << "x       aperte 9 para voltar ao menu inicial      x" << endl;
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
@@ -546,8 +549,14 @@ void menu() // loop --> so sai quando for = 3
 
         case 4:
 
+            Login();
+            break;
+
+        case 5:
+
             sairDoPrograma();
             break;
+
 
         case 9: // ta 9 pq n consigo por a abrra de espaço
 
@@ -561,6 +570,79 @@ void menu() // loop --> so sai quando for = 3
             break;
         }
     } while (teclaa != 3);
+}
+
+
+
+struct Cadastro {
+    string nome;
+
+};
+
+void Login() {
+
+    ofstream arquivo;
+    ifstream arquivoLeitura;
+
+    Cadastro cadastro;
+
+    int opcao;
+    do {
+        cout << "Selecione uma opcao: " << endl;
+        cout << "1 - Adicionar nome" << endl;
+        cout << "2 - Perfis" << endl;
+        cout << "0 - Continuar" << endl;
+        cout << "Opcao: ";
+        cin >> opcao;
+        system("cls");
+        switch (opcao) {
+            case 1:
+                arquivo.open("cadastros.txt", ios::app); // Abre o arquivo para escrita no final
+                if (!arquivo.is_open()) {
+                    cout << "Erro ao abrir o arquivo." << endl;
+                    break;
+                }
+
+                cin.ignore();
+                cout << "Nome: ";
+                getline(cin, cadastro.nome);
+
+                arquivo << cadastro.nome << endl;
+                arquivo.close();
+                PausarLimpar();
+                break;
+
+
+        case 2:
+                   arquivoLeitura.open("cadastros.txt");
+                   if (!arquivoLeitura.is_open()) {
+                       cout << "Erro ao abrir o arquivo." << endl;
+                       break;
+                   }
+
+                   while (getline(arquivoLeitura, cadastro.nome)) {
+                       cout << "Nome: " << cadastro.nome << endl;
+                   }
+
+                   PausarLimpar();
+                   arquivoLeitura.close();
+                   PausarLimpar();
+                   break;
+
+
+            case 0:
+                cout << "Encerrando..." << endl;
+                break;
+
+            default:
+                cout << "Opção inválida." << endl;
+                break;
+        }
+    }
+    while (opcao != 0);
+    {
+        menu();
+    };
 }
 
 void telabloqueio()
@@ -577,12 +659,13 @@ void telabloqueio()
     cout << "x                                                 x" << endl;
     cout << "x                                                 x" << endl;
     cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
-    system("pause");
-    menu();
+    PausarLimpar();
+    Login();
+    PausarLimpar();
 }
 
-int main()
-{
+int main(){
     telabloqueio();
+
     return 0;
 }
