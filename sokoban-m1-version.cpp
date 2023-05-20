@@ -17,9 +17,16 @@ void telabloqueio();
 void carregarMapa(char matrizJogo[11][11], int &x, int &y);
 void salvarMapa(char matrizJogo[11][11], int &x, int &y);
 void sairDoPrograma();
-void Login();
+void exibirRanking();
+
 
 int contadorPassos = 0; // Contador de passos
+
+struct Jogador 
+{
+    string nome;
+    int passos;
+};
 
 void sairDoPrograma()
 {
@@ -54,7 +61,7 @@ void PausarLimpar()
 
 void salvarMapa(char matrizJogo[11][11], int &x, int &y)
 {
-    ofstream mapasSalvos("mapas.txt", ios::app);
+    ofstream mapasSalvos("mapas.txt");
 
     if (mapasSalvos.is_open())
     {
@@ -94,45 +101,20 @@ void salvarMapa(char matrizJogo[11][11], int &x, int &y)
     }
 }
 
-void carregarMapa(char matrizJogo[11][11], int &x, int &y)
-{
-    ifstream carregamento("mapas.txt"); // mesmo mapa do trabalho
+void carregarMapa(char matrizJogo[][11], int tamanho, int &x, int &y) {
+    ifstream carregamento("mapas.txt");
+  
+    if (carregamento.is_open()) {
+        carregamento >> x >> y; // Ler a posição do personagem
+        carregamento.ignore(); // Ignorar o caractere de nova linha
 
-    if (carregamento.is_open())
-    {
-
-        for (int i = 0; i < 11; i++)
-        {
-            for (int j = 0; j < 11; j++)
-            {
+        for (int i = 0; i < tamanho; i++) {
+            for (int j = 0; j < tamanho; j++) {
                 char c;
                 carregamento.get(c);
-
-                switch (c)
-                {
-                case 9:
-                    matrizJogo[i][j] = char(24);
-                    x = i;
-                    y = j;
-                    break;
-                case 1:
-                    matrizJogo[i][j] = char(219);
-                    break;
-                case 2:
-                    matrizJogo[i][j] = char(176);
-                    break;
-                case 3:
-                    matrizJogo[i][j] = char(169);
-                    break;
-                case 4:
-                    matrizJogo[i][j] = char(178);
-                    break;
-                case 0:
-                    matrizJogo[i][j] = ' ';
-                    break;
-                }
+                matrizJogo[i][j] = c;
             }
-            carregamento.ignore('\n');
+            carregamento.ignore(); // Ignorar o caractere de nova linha
         }
     }
 }
@@ -186,6 +168,7 @@ void imprimeMapaPersonagem(char matrizJogo[11][11], int x, int y)
 
 bool verificarVitoria(char matrizJogo[11][11])
 {
+
     for (int i = 0; i < 11; i++)
     {
         for (int j = 0; j < 11; j++)
@@ -209,7 +192,7 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
         tecla = getch(); // funcionamento tecla
     }
 
-    // switch referente a movimentação normal (das teclas):
+    // switch reperente a movimentação normal (das teclas):
 
     switch (tecla)
     {
@@ -340,23 +323,188 @@ void movimento(char tecla, char matrizJogo[11][11], int &x, int &y)
         }
         break;
     }
-    ganhar = verificarVitoria(matrizJogo); // atribua o resultado à variável ganhar
+    ganhar = verificarVitoria(matrizJogo); // atribua o resultado à variável ganhar por nada 
+
 
     if (ganhar == true)
     {
         cout << "Você venceu!" << endl;
         cout << "Total de passos: " << contadorPassos << endl; // Exibe o total de passos
+
+        string nome;
+        cout << "Insira seu nome: ";
+        cin >> nome;
+
+        Jogador jogador;                // Criar objeto Jogador com os dados do jogador atual
+        jogador.nome = nome;
+        jogador.passos = contadorPassos;
+
+        // Abrir o arquivo de ranking para adicionar os dados
+        ofstream arquivoRanking;
+        arquivoRanking.open("SaveRecord/teste1.txt", ios_base::app); // ios::app para adicionar no final do arquivo
+        cout << jogador.nome << endl;
+        cout << jogador.passos;
+
+        system("pause");
+
+        if (arquivoRanking.is_open()) //Preencher arquivo "teste1" com os valores do jogador (nome, passos).
+        {
+            // Escrever os dados do jogador no arquivo
+            arquivoRanking << "<Name>" << endl;
+            arquivoRanking << "\t" << jogador.nome;
+            arquivoRanking << endl << "<Moves>" << endl;
+            arquivoRanking << "\t" << jogador.passos << endl;
+
+            // Fechar o arquivo
+            arquivoRanking.close();
+        }
+        else
+        {
+            cout << "Erro ao abrir o arquivo de ranking." << endl;
+        }
+
         PausarLimpar();
         menu();
-        // Faça algo para encerrar o jogo ou oferecer opções para o jogador
     }
-    verificarVitoria(matrizJogo);
 }
+
+void exibirRanking()
+{
+    ifstream arquivoRanking;
+    string phrase;
+    int counter = 0, counter2 = 0, search, varAUX;
+    string varAUXString;
+    Jogador *pointer;
+
+    arquivoRanking.open("SaveRecord/teste1.txt");
+
+    if (arquivoRanking.is_open()) //Condição para achar valor do tamanho do vetor.
+    {
+        while (arquivoRanking.eof() == false)
+        {
+            arquivoRanking >> phrase; // phrase variavel p/ percorrer o arquivo
+
+            if(phrase == "<Name>"){ //Caso ache um jogador, o contador aumentara.
+                counter++;
+            }
+        }
+
+        arquivoRanking.close();
+    }
+    
+    pointer = new Jogador[counter + 1]; //Criação do vetor dinamico
+
+    arquivoRanking.open("SaveRecord/teste1.txt");
+
+    if(arquivoRanking.is_open()){ //Condição para atribuir valores no vetor dinamico "pointer".
+        while(arquivoRanking.eof() == false){
+            arquivoRanking >> phrase;
+            if(phrase == "<Name>"){
+                arquivoRanking >> phrase; //Proxima frase
+                pointer[counter2].nome = phrase; //Atribuição do nome do jogador para o vetor.
+
+                arquivoRanking >> phrase;
+                if(phrase == "<Moves>"){
+                    arquivoRanking >> search;
+
+                    pointer[counter2].passos = search; //Atribuição do numero de passos do jogador para o vetor.
+                    counter2++;
+                }
+            }
+        }
+    }
+    arquivoRanking.close();
+
+    for(int i = 0; i < counter; i++){ //Laço para organizado do menor para o maior.
+        for(int j = i + 1; j < counter; j++){
+            if(pointer[i].passos > pointer[j].passos){ //Bubble Source.
+                varAUX = pointer[i].passos;
+                pointer[i].passos = pointer[j].passos;
+                pointer[j].passos = varAUX;
+
+                varAUXString = pointer[i].nome;
+                pointer[i].nome = pointer[j].nome;
+                pointer[j].nome = varAUX;
+
+            }
+        }
+    }
+
+    for(int i = 0; i < counter; i++){ //Demonstração do ranking.
+        cout << pointer[i].nome;
+        cout << "\t" << pointer[i].passos << endl << endl;
+    }
+
+    system("pause");
+    
+} 
 
 void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
 {
-    char mapa1[11][11] = {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // microban|| 10
-                          1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, /* posição inicial: x=4,y=5 */
+    ifstream file;
+    int lines, columns, search;
+    string phrase;
+    char phrase2;
+
+    file.open("Saves/microban2(10).txt");
+
+    if(file.is_open()){
+        while(file.eof() == false){
+            file >> search;
+            lines = search;
+
+            file >> search;
+            columns = search;
+        } 
+    }
+
+    file.close();
+
+    char **mapa1 = new char*[lines];
+    mapa1[0] = new char[lines*columns];
+
+    file.open("Saves/microban2(10).txt");
+
+    if(file.is_open()){
+        while(file.eof() == false){
+            file >> phrase;
+            file >> phrase;
+            file >> phrase;
+            file >> phrase;
+
+            for(int lines = 0; lines < 11; lines++){
+                for(int columns = 0; columns < 11; columns++){
+                    file >> phrase2;
+                    mapa1[lines][columns] = phrase2;
+                    file >> phrase2;
+                }
+            }
+        }
+    }
+
+    file.close();
+
+    system("cls");
+
+    for(int lines = 0; lines < 11; lines++){
+        for(int columns = 0; columns < 11; columns++){
+           cout <<  mapa1[lines][columns] << "\t";
+        }
+
+        cout << endl;
+    }
+
+    system("pause");
+    system("cls");
+
+
+
+
+
+     contadorPassos = 0;
+
+    /*char mapa1[11][11] = {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // microban|| 10
+                          1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, posição inicial: x=4,y=5 
                           1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
                           1, 2, 2, 2, 0, 0, 1, 0, 0, 0, 0,
                           1, 3, 3, 3, 0, 0, 1, 0, 0, 0, 0,
@@ -365,7 +513,7 @@ void escolheMatriz(char matrizJogo[11][11], int escolhaMapa, int &x, int &y)
                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};*/
 
     char mapa2[11][11] = {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, // microban |||
                           1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, /* posição inicial: x=5,y=7 */
@@ -491,11 +639,11 @@ void menu() // loop --> so sai quando for = 3
         cout << "x                                                 x" << endl;
         cout << "x                     2~SOBRE~                    x" << endl;
         cout << "x                                                 x" << endl;
-        cout << "x                    3~CONTINUAR~                 x" << endl;
+        cout << "x                   3~CONTINUAR~                  x" << endl;
         cout << "x                                                 x" << endl;
         cout << "x                    4~RANKING~                   x" << endl;
         cout << "x                                                 x" << endl;
-        cout << "x                     5~SAIR                      x" << endl;
+        cout << "x                     5~SAIR~                     x" << endl;
         cout << "x                                                 x" << endl;
         cout << "x       aperte 9 para voltar ao menu inicial      x" << endl;
         cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
@@ -549,14 +697,14 @@ void menu() // loop --> so sai quando for = 3
 
         case 4:
 
-            Login();
+            exibirRanking();
             break;
+            
 
-        case 5:
+        case 5: 
 
             sairDoPrograma();
             break;
-
 
         case 9: // ta 9 pq n consigo por a abrra de espaço
 
@@ -570,79 +718,6 @@ void menu() // loop --> so sai quando for = 3
             break;
         }
     } while (teclaa != 3);
-}
-
-
-
-struct Cadastro {
-    string nome;
-
-};
-
-void Login() {
-
-    ofstream arquivo;
-    ifstream arquivoLeitura;
-
-    Cadastro cadastro;
-
-    int opcao;
-    do {
-        cout << "Selecione uma opcao: " << endl;
-        cout << "1 - Adicionar nome" << endl;
-        cout << "2 - Perfis" << endl;
-        cout << "0 - Continuar" << endl;
-        cout << "Opcao: ";
-        cin >> opcao;
-        system("cls");
-        switch (opcao) {
-            case 1:
-                arquivo.open("cadastros.txt", ios::app); // Abre o arquivo para escrita no final
-                if (!arquivo.is_open()) {
-                    cout << "Erro ao abrir o arquivo." << endl;
-                    break;
-                }
-
-                cin.ignore();
-                cout << "Nome: ";
-                getline(cin, cadastro.nome);
-
-                arquivo << cadastro.nome << endl;
-                arquivo.close();
-                PausarLimpar();
-                break;
-
-
-        case 2:
-                   arquivoLeitura.open("cadastros.txt");
-                   if (!arquivoLeitura.is_open()) {
-                       cout << "Erro ao abrir o arquivo." << endl;
-                       break;
-                   }
-
-                   while (getline(arquivoLeitura, cadastro.nome)) {
-                       cout << "Nome: " << cadastro.nome << endl;
-                   }
-
-                   PausarLimpar();
-                   arquivoLeitura.close();
-                   PausarLimpar();
-                   break;
-
-
-            case 0:
-                cout << "Encerrando..." << endl;
-                break;
-
-            default:
-                cout << "Opção inválida." << endl;
-                break;
-        }
-    }
-    while (opcao != 0);
-    {
-        menu();
-    };
 }
 
 void telabloqueio()
@@ -659,13 +734,12 @@ void telabloqueio()
     cout << "x                                                 x" << endl;
     cout << "x                                                 x" << endl;
     cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
-    PausarLimpar();
-    Login();
-    PausarLimpar();
+    system("pause");
+    menu();
 }
 
-int main(){
+int main()
+{
     telabloqueio();
-
     return 0;
 }
